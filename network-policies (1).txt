@@ -1,0 +1,115 @@
+
+
+
+CREATE A NS AND LABEL IT : kubectl create ns dev && kubectl label ns dev "env=dev"
+CREATE 3 PODS:
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  labels:
+    app: client
+spec:
+  containers:
+  - name: cont-1
+    image: nginx
+    ports:
+      - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: swiggy
+  labels:
+    app: swiggy
+spec:
+  containers:
+  - name: cont-1
+    image: nginx
+    ports:
+      - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zomato
+  labels:
+    app: zomato
+spec:
+  containers:
+  - name: cont-1
+    image: nginx
+    ports:
+      - containerPort: 80
+
+
+
+Now update all pods and install iputils-ping 
+Now check all pods are communicating or not 
+
+Lets create ingress : This allows only Swiggy pod can communicate with client, none of the other pods can communicate with client 
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-swiggy-to-client
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: client 
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: swiggy
+
+
+
+Now only swiggy pod can communicate with client pod, But here the problem is Swiggy pod can communicate with other pods like zomato 
+To restrict it we need to write egress file
+
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-swiggy-egress-to-client
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: swiggy 
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: client
+
+
+
+To deny other pods communication :
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+
+
+
+
