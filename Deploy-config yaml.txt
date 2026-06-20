@@ -1,0 +1,34 @@
+here we are taking the specific values form configmap files and creatigng the pod thorugh deployment object
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+          - name: cont1
+            image: httpd
+            ports:
+              - containerPort: 80
+            env:
+              - name: db-name
+                valueFrom: 
+                  configMapKeyRef:
+                    name: myfirstcm
+                    key: db-name
+
+              - name: myapp-name
+                valueFrom:
+                  configMapKeyRef:
+                    name: secondconf
+                    key: app
