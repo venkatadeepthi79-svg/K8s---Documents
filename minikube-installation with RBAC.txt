@@ -1,0 +1,211 @@
+1  yum install docker -y && systemctl start docker
+
+    2  curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+
+    3  sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+
+    4  minikube start --driver=docker --force
+
+    5  minikube status
+
+    6  history
+
+    7  mkdir mustafa-user && cd mustafa-user
+
+    8  openssl genrsa -out mustafa.key 2048
+
+    9  ll
+
+   10  openssl req -new -key mustafa.key -out mustafa.csr -subj "/CN=mustafa/O=group1"
+
+   11  ll
+
+   12  openssl x509 -req -in mustafa.csr -CA ~/.minikube/ca.crt -CAkey ~/.minikube/ca.key -CAcreateserial -out mustafa.crt -days 500
+
+   13  ll
+
+   14  kubectl config set-credentials mustafa --client-certificate=mustafa.crt --client-key=mustafa.key
+
+   15     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+   16  chmod +x kubectl
+
+   17  mv kubectl /usr/local/bin/
+
+   18  kubectl config set-credentials mustafa --client-certificate=mustafa.crt --client-key=mustafa.key
+
+   19  kubectl config view
+
+   20  ll
+
+   21  kubectl config view
+
+   22  kubectl config set-context devops --cluster=minikube --user=mustafa
+
+   23  kubectl config view --minify
+
+   24  kubectl config view
+
+   25  kubectl get po
+
+   26  kubectl get deploy
+
+   27  kubectl get svc
+
+   28  kubectl config use-context devops
+
+   29  kubectl config view
+
+   30  kubectl get po
+
+   31  kubectl get deploy
+
+   32  kubectl get svc
+
+   33  kubectl config use-context minikube
+
+   34  kubectl get po
+
+   35  kubectl get svc
+
+   36  kubectl get ns
+
+   37  kubectl create ns dev
+
+   38  vim role.yml
+
+   39  kubectl create -f role.yml
+
+   40  vim role.yml
+
+   41  kubectl create -f role.yml
+
+   42  kubectl get role
+
+   43  kubectl get role -n dev
+
+   44  vim rbinding.yml
+
+   45  kubectl create -f rbinding.yml
+
+   46  vim rbinding.yml
+
+   47  kubectl create -f rbinding.yml
+
+   48  kubectl config use-context devops
+
+   49  kubectl get po
+
+   50  kubectl get po -n dev
+
+   51  kubectl run pod-1 --image=nginx -n dev
+
+   52  kubectl run pod-1 --image=nginx
+
+   53  kubectl get po -n dev
+
+   54  kubectl delete pod pod-1 -n dev
+
+   55  kubectl get deploy -n dev
+
+   56  vim role.yml
+
+   57  kubectl auth can i get deploy
+
+   58  kubectl auth get po
+
+   59  kubectl auth can-i get po
+
+   60  kubectl auth can-i get po -n dev
+
+   61  kubectl auth can-i get deploy -n dev
+
+   62  vim role.yml
+
+   63  kubectl auth can-i get svc -n dev
+
+   64  kubectl config use-context minikube
+
+   65  vim role.yml
+
+   66  kubectl apply -f role.yml
+
+   67  kubectl config use-context devops
+
+   68  kubectl auth can-i get svc
+
+   69  kubectl auth can-i get svc -n dev
+
+   70  kubectl auth can-i get deploy -n dev
+
+   71  kubectl config use-context minikube
+
+   72  vim role.yml
+
+   73  kubectl apply -f role.yml
+
+   74  kubectl config use-context devops
+
+   75  kubectl auth can-i get deploy -n dev
+
+   76  kubectl auth can-i create deploy -n dev
+
+   77  kubectl config use-context minikube
+
+   78  vim role.yml
+
+   79  kubectl apply -f role.yml
+
+   80  kubectl config use-context devops
+
+   81  kubectl auth can-i create deploy -n dev
+
+   82  kubectl auth can-i get deploy -n dev
+
+   83  kubectl auth can-i get cm -n dev
+
+   84  kubectl auth can-i get cm
+
+   85  kubectl auth can-i get deploy
+
+   86  kubectl config use-context minikube
+
+   87  cp role.yml clusterrole.yml
+
+   88  vim clusterrole.yml
+
+   89  cp rbinding.yml crolebinding.yml
+
+   90  vim crolebinding.yml
+
+   91  kubectl create -f clusterrole.yml
+
+   92  kubectl create -f crolebinding.yml
+
+   93  kubectl create ns test
+
+   94  kubectl create ns prod
+
+   95  kubectl config use-context devops
+
+   96  kubectl auth can-i get po
+
+   97  kubectl auth can-i get po -n dev
+
+   98  kubectl auth can-i get po -n prod
+
+   99  kubectl auth can-i get po -n test
+
+  100  kubectl auth can-i get cm -n test
+
+  101  kubectl auth can-i get cm -n dev
+
+  102  kubectl auth can-i get cm
+
+  103  kubectl auth can-i get deploy
+
+  104  kubectl auth can-i get deploy -n test
+
+  105  kubectl auth can-i get deploy -n dev
+
+  106  history
